@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06 - JSON Client-Side Scripting</title>
+</head>
+<body>
+    <h2>Book Collection JSON Reader</h2>
+    <p>Check your browser's <strong>Console</strong> to view the retrieved details.</p>
+
+    <script>
+        
+        fetch('books.json')
+            .then(response => response.json())
+            .then(data => {
+          
+                const books = data.Books;
+                console.log("(a) Title of the first book:");
+                console.log(books[0].name);
+
+                console.log("\n(b) Author of the second book:");
+                console.log(books[1].author);
+
+                console.log("\n(c) Genres of all books:");
+                books.forEach((book, index) => {
+                    console.log(`- Book ${index + 1} (${book.name}):`, book.genres);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading or parsing the JSON file:", error);
+            });
+    </script>
+</body>
+</html>

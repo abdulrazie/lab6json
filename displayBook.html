@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetching from github</title>
+</head>
+<body>
+    <h2>Book Collection JSON Reader from github</h2>
+    <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search by title">
+        <button id="search-button">Search</button>
+    </div>
+    <div id="book-details"></div>
+
+    <script>
+        let bookCollection = [];
+        const githubRawUrl = 'https://raw.githubusercontent.com/abdulrazie/lab6json/main/books.json';
+
+        fetch(githubRawUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+              
+                bookCollection = data.Books;
+                console.log("Books loaded successfully from GitHub:", bookCollection);
+            })
+            .catch(error => {
+                console.error("Error fetching JSON from GitHub:", error);
+                document.getElementById('book-details').innerHTML = '<p style="color:red;">Failed to load books from GitHub. Check your URL.</p>';
+            });
+
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-button');
+        const resultsContainer = document.getElementById('book-details');
+
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const filteredBooks = bookCollection.filter(book => book.name.toLowerCase().includes(searchTerm));
+
+            if (filteredBooks.length > 0) {
+                resultsContainer.innerHTML = filteredBooks.map(book => `
+                    <div class="book">
+                        <h3>${book.name}</h3>
+                        <p><strong>Author:</strong> ${book.author}</p>
+                        <p><strong>Publication Year:</strong> ${book.publication_year}</p>
+                        <p><strong>Genres:</strong> ${book.genres}</p>
+                    </div>
+                `).join('');
+            } else {
+                resultsContainer.innerHTML = '<p>No books found matching your search.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
